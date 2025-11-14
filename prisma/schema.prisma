@@ -14,5 +14,15 @@ model Gift {
   phone     String
   message   String?
   elderName String
+  status    String   @default("pendente")
   createdAt DateTime @default(now())
+}
+
+model Elder {
+  id      Int     @id @default(autoincrement())
+  name    String
+  age     Int     @default(0)
+  likes   String  @default("")
+  wish    String  @default("")
+  adopted Boolean @default(false)
 }
