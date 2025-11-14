@@ -25,4 +25,5 @@ model Elder {
   likes   String  @default("")
   wish    String  @default("")
   adopted Boolean @default(false)
+  image   String?
 }
