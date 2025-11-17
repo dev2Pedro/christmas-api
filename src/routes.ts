@@ -143,6 +143,41 @@ export async function routes(app: FastifyInstance) {
     }
   });
 
+  app.put("/elders/:id", async (req, reply) => {
+    try {
+      const paramsSchema = z.object({
+        id: z.string().transform(Number),
+      });
+
+      const bodySchema = z.object({
+        adopted: z.boolean(),
+      });
+
+      const { id } = paramsSchema.parse(req.params);
+      const { adopted } = bodySchema.parse(req.body);
+
+      const updated = await prisma.elder.update({
+        where: { id },
+        data: { adopted },
+      });
+
+      return reply.send(updated);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return reply.status(400).send({
+          message: "Dados inválidos",
+          errors: error.issues,
+        });
+      }
+
+      console.error("❌ ERRO NO PUT /elders/:id:", error);
+      return reply.status(500).send({
+        message: "Erro ao atualizar idoso",
+        error,
+      });
+    }
+  });
+
   app.delete("/elders/:id", async (req, reply) => {
     try {
       const paramsSchema = z.object({
