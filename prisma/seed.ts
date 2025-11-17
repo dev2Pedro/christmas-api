@@ -11,6 +11,7 @@ async function main() {
         likes: "Bolsinha",
         wish: "Bolsinha",
         adopted: false,
+        image: "/img/foto1.jpg",
       },
       {
         name: "Ilka",
@@ -18,6 +19,7 @@ async function main() {
         likes: "Sandália tam 39",
         wish: "Sandália tam 39 + salgadinho Cheetos laranja ou chocolate",
         adopted: false,
+        image: "/img/foto2.jpg",
       },
       {
         name: "Célia",
@@ -25,6 +27,7 @@ async function main() {
         likes: "Presilhas e tiaras",
         wish: "Presilha de cabelo, tiaras",
         adopted: false,
+        image: "/img/foto3.jpg",
       },
       {
         name: "Rita",
@@ -32,6 +35,7 @@ async function main() {
         likes: "Casaquinho fino",
         wish: "Casaquinho fino / pantufa",
         adopted: false,
+        image: "/img/foto4.jpg",
       },
       {
         name: "Ida",
@@ -39,6 +43,7 @@ async function main() {
         likes: "Chinelinho decorado",
         wish: "Chinelinho decorado tam 39 / perfume ou creme",
         adopted: false,
+        image: "/img/foto5.jpg",
       },
       {
         name: "Marisa",
@@ -46,6 +51,7 @@ async function main() {
         likes: "Chocolates",
         wish: "Chocolates Lacta / bolsinha de lado",
         adopted: false,
+        image: "/img/foto6.jpg",
       },
       {
         name: "Carin",
@@ -53,6 +59,7 @@ async function main() {
         likes: "Brinquedos de gato",
         wish: "Coisas para gatinha (brinquedinhos) / chocolates",
         adopted: false,
+        image: "/img/foto7.jpg",
       },
       {
         name: "Waltraud",
@@ -60,6 +67,7 @@ async function main() {
         likes: "",
         wish: "????",
         adopted: false,
+        image: "/img/foto8.jpg",
       },
       {
         name: "Airton",
@@ -67,6 +75,7 @@ async function main() {
         likes: "Chocolate",
         wish: "Chocolate",
         adopted: false,
+        image: "/img/foto9.jpg",
       },
       {
         name: "Domingos",
@@ -74,6 +83,7 @@ async function main() {
         likes: "Camiseta masculina",
         wish: "Camiseta masculina",
         adopted: false,
+        image: "/img/foto10.jpg",
       },
       {
         name: "Pedro",
@@ -81,7 +91,7 @@ async function main() {
         likes: "Camiseta masculina",
         wish: "Camiseta masculina",
         adopted: false,
-        image: "/img/foto1.jpg",
+        image: "/img/foto11.jpg",
       },
     ],
   });
