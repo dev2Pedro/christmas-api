@@ -1,21 +1,15 @@
 import { FastifyInstance } from "fastify";
 import { z, ZodError } from "zod";
 import { PrismaClient } from "@prisma/client";
-import { giftSchema } from "./validators/giftSchema"; // ✅ Importar o schema
+import { giftSchema } from "./validators/giftSchema";
 
 const prisma = new PrismaClient();
 
 export async function routes(app: FastifyInstance) {
-  // STATUS
   app.get("/", () => {
     return "🎄 API do Natal funcionando!";
   });
 
-  // -----------------------------
-  // 📌 GIFTS
-  // -----------------------------
-
-  // LISTAR TODOS OS GIFTS
   app.get("/gifts", async () => {
     const gifts = await prisma.gift.findMany({
       orderBy: { createdAt: "desc" },
@@ -24,10 +18,8 @@ export async function routes(app: FastifyInstance) {
     return gifts;
   });
 
-  // CRIAR UM GIFT - ✅ USANDO O SCHEMA VALIDADO
   app.post("/gifts", async (req, reply) => {
     try {
-      // ✅ Validação com mensagens de erro customizadas
       const data = giftSchema.parse(req.body);
 
       const gift = await prisma.gift.create({ data });
@@ -51,12 +43,7 @@ export async function routes(app: FastifyInstance) {
     }
   });
 
-  // ATUALIZAR STATUS DO GIFT
   app.put("/gifts/:id", async (req, reply) => {
-    console.log("➡️ RECEBIDO NO PUT /gifts/:id");
-    console.log("PARAMS:", req.params);
-    console.log("BODY:", req.body);
-
     try {
       const paramsSchema = z.object({
         id: z.string().transform(Number),
@@ -68,9 +55,6 @@ export async function routes(app: FastifyInstance) {
 
       const { id } = paramsSchema.parse(req.params);
       const { status } = bodySchema.parse(req.body);
-
-      console.log("ID PARSED:", id);
-      console.log("STATUS PARSED:", status);
 
       const updated = await prisma.gift.update({
         where: { id },
@@ -95,7 +79,6 @@ export async function routes(app: FastifyInstance) {
     }
   });
 
-  // DELETAR UM GIFT
   app.delete("/gifts/:id", async (req, reply) => {
     try {
       const paramsSchema = z.object({
@@ -124,11 +107,6 @@ export async function routes(app: FastifyInstance) {
     }
   });
 
-  // -----------------------------
-  // 📌 ELDERS
-  // -----------------------------
-
-  // LISTAR TODOS OS ELDERS
   app.get("/elders", async () => {
     const elders = await prisma.elder.findMany({
       orderBy: { name: "asc" },
@@ -137,7 +115,6 @@ export async function routes(app: FastifyInstance) {
     return elders;
   });
 
-  // CRIAR UM ELDER - ✅ VALIDAÇÃO MELHORADA
   app.post("/elders", async (req, reply) => {
     try {
       const schema = z.object({
@@ -166,7 +143,6 @@ export async function routes(app: FastifyInstance) {
     }
   });
 
-  // DELETAR UM ELDER
   app.delete("/elders/:id", async (req, reply) => {
     try {
       const paramsSchema = z.object({
