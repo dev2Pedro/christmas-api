@@ -1,4 +1,5 @@
 import { fastify } from "fastify";
+import cookie from "@fastify/cookie";
 import cors from "@fastify/cors";
 import {
   validatorCompiler,
@@ -14,8 +15,9 @@ app.setValidatorCompiler(validatorCompiler);
 app.setSerializerCompiler(serializerCompiler);
 
 app.register(cors, {
-  origin: "*",
-  methods: ["*"],
+  origin: "http://localhost:3000",
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
 });
 
 app.register(fastifySwagger, {
@@ -25,6 +27,10 @@ app.register(fastifySwagger, {
       version: "1.0.0",
     },
   },
+});
+
+app.register(cookie, {
+  secret: "super-secret-password",
 });
 
 app.register(fastifySwaggerUi, {

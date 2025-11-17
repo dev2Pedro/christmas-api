@@ -61,7 +61,6 @@ export async function routes(app: FastifyInstance) {
         data: { status },
       });
 
-      console.log("UPDATE OK:", updated);
       return reply.send(updated);
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -201,6 +200,48 @@ export async function routes(app: FastifyInstance) {
 
       return reply.status(500).send({
         message: "Erro ao deletar idoso",
+        error,
+      });
+    }
+  });
+
+  app.post("/admin/login", async (req, reply) => {
+    const schema = z.object({
+      email: z.string().email(),
+      password: z.string().min(1),
+    });
+
+    try {
+      const { email, password } = schema.parse(req.body);
+
+      if (
+        email !== process.env.ADMIN_EMAIL ||
+        password !== process.env.ADMIN_PASSWORD
+      ) {
+        return reply.status(401).send({
+          message: "Credenciais inválidas",
+        });
+      }
+
+      reply.setCookie("admin_authenticated", "true", {
+        path: "/",
+        httpOnly: true,
+        sameSite: "lax",
+        secure: process.env.NODE_ENV === "production",
+        maxAge: 60 * 60 * 24 * 30,
+      });
+
+      return reply.send({ message: "Login realizado com sucesso" });
+    } catch (error) {
+      if (error instanceof ZodError) {
+        return reply.status(400).send({
+          message: "Erro nos dados enviados",
+          errors: error.issues,
+        });
+      }
+
+      return reply.status(500).send({
+        message: "Erro no servidor",
         error,
       });
     }
