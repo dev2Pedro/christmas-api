@@ -1,6 +1,7 @@
 import { FastifyInstance } from "fastify";
-import { z } from "zod";
+import { z, ZodError } from "zod";
 import { PrismaClient } from "@prisma/client";
+import { giftSchema } from "./validators/giftSchema"; // ✅ Importar o schema
 
 const prisma = new PrismaClient();
 
@@ -23,22 +24,34 @@ export async function routes(app: FastifyInstance) {
     return gifts;
   });
 
-  // CRIAR UM GIFT
+  // CRIAR UM GIFT - ✅ USANDO O SCHEMA VALIDADO
   app.post("/gifts", async (req, reply) => {
-    const bodySchema = z.object({
-      name: z.string(),
-      email: z.string().email(),
-      phone: z.string(),
-      message: z.string().optional(),
-      elderName: z.string(),
-    });
+    try {
+      // ✅ Validação com mensagens de erro customizadas
+      const data = giftSchema.parse(req.body);
 
-    const data = bodySchema.parse(req.body);
-    const gift = await prisma.gift.create({ data });
+      const gift = await prisma.gift.create({ data });
 
-    return reply.status(201).send(gift);
+      return reply.status(201).send(gift);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return reply.status(400).send({
+          message: "Dados inválidos",
+          errors: error.issues.map((err) => ({
+            field: err.path.join("."),
+            message: err.message,
+          })),
+        });
+      }
+
+      return reply.status(500).send({
+        message: "Erro ao criar gift",
+        error,
+      });
+    }
   });
 
+  // ATUALIZAR STATUS DO GIFT
   app.put("/gifts/:id", async (req, reply) => {
     console.log("➡️ RECEBIDO NO PUT /gifts/:id");
     console.log("PARAMS:", req.params);
@@ -66,11 +79,47 @@ export async function routes(app: FastifyInstance) {
 
       console.log("UPDATE OK:", updated);
       return reply.send(updated);
-    } catch (err) {
-      console.error("❌ ERRO NO PUT /gifts/:id:", err);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return reply.status(400).send({
+          message: "Dados inválidos",
+          errors: error.issues,
+        });
+      }
+
+      console.error("❌ ERRO NO PUT /gifts/:id:", error);
       return reply.status(500).send({
         message: "Erro ao atualizar",
-        error: err,
+        error,
+      });
+    }
+  });
+
+  // DELETAR UM GIFT
+  app.delete("/gifts/:id", async (req, reply) => {
+    try {
+      const paramsSchema = z.object({
+        id: z.string().transform(Number),
+      });
+
+      const { id } = paramsSchema.parse(req.params);
+
+      await prisma.gift.delete({
+        where: { id },
+      });
+
+      return reply.status(204).send();
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return reply.status(400).send({
+          message: "ID inválido",
+          errors: error.issues,
+        });
+      }
+
+      return reply.status(500).send({
+        message: "Erro ao deletar gift",
+        error,
       });
     }
   });
@@ -88,48 +137,61 @@ export async function routes(app: FastifyInstance) {
     return elders;
   });
 
-  // CRIAR UM ELDER
+  // CRIAR UM ELDER - ✅ VALIDAÇÃO MELHORADA
   app.post("/elders", async (req, reply) => {
-    const schema = z.object({
-      name: z.string(),
-    });
+    try {
+      const schema = z.object({
+        name: z.string().min(3, "Nome deve ter no mínimo 3 caracteres"),
+      });
 
-    const { name } = schema.parse(req.body);
+      const { name } = schema.parse(req.body);
 
-    const elder = await prisma.elder.create({
-      data: { name },
-    });
+      const elder = await prisma.elder.create({
+        data: { name },
+      });
 
-    return reply.status(201).send(elder);
+      return reply.status(201).send(elder);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return reply.status(400).send({
+          message: "Dados inválidos",
+          errors: error.issues,
+        });
+      }
+
+      return reply.status(500).send({
+        message: "Erro ao criar idoso",
+        error,
+      });
+    }
   });
 
   // DELETAR UM ELDER
   app.delete("/elders/:id", async (req, reply) => {
-    const paramsSchema = z.object({
-      id: z.string().transform((v) => Number(v)),
-    });
+    try {
+      const paramsSchema = z.object({
+        id: z.string().transform((v) => Number(v)),
+      });
 
-    const { id } = paramsSchema.parse(req.params);
+      const { id } = paramsSchema.parse(req.params);
 
-    await prisma.elder.delete({
-      where: { id },
-    });
+      await prisma.elder.delete({
+        where: { id },
+      });
 
-    return reply.status(204).send();
-  });
+      return reply.status(204).send();
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return reply.status(400).send({
+          message: "ID inválido",
+          errors: error.issues,
+        });
+      }
 
-  // DELETAR UM GIFT
-  app.delete("/gifts/:id", async (req, reply) => {
-    const paramsSchema = z.object({
-      id: z.string().transform(Number),
-    });
-
-    const { id } = paramsSchema.parse(req.params);
-
-    await prisma.gift.delete({
-      where: { id },
-    });
-
-    return reply.status(204).send();
+      return reply.status(500).send({
+        message: "Erro ao deletar idoso",
+        error,
+      });
+    }
   });
 }
