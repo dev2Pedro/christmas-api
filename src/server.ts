@@ -14,16 +14,21 @@ const app = Fastify();
 app.setValidatorCompiler(validatorCompiler);
 app.setSerializerCompiler(serializerCompiler);
 
+// ✅ CORS ATUALIZADO - Aceita localhost E Vercel
 app.register(cors, {
-  origin: ["http://localhost:3000"],
+  origin: [
+    "http://localhost:3000",
+    "http://localhost:3001",
+    "https://christmas-front-zeta.vercel.app", // ✅ Sua URL da Vercel
+  ],
   credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
 });
 
 app.register(fastifySwagger, {
   openapi: {
     info: {
-      title: "Typed API",
+      title: "Christmas API",
       version: "1.0.0",
     },
   },
@@ -49,7 +54,7 @@ const port = Number(process.env.PORT) || 3333;
 app
   .listen({ port, host: "0.0.0.0" })
   .then(() => {
-    console.log(`Server is running on port ${port}`);
+    console.log(`🎄 Server is running on port ${port}`);
   })
   .catch((err) => {
     console.error("Error starting server:", err);
