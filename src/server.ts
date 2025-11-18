@@ -7,23 +7,19 @@ import {
 } from "fastify-type-provider-zod";
 import { fastifySwagger } from "@fastify/swagger";
 import { fastifySwaggerUi } from "@fastify/swagger-ui";
-import { routes } from "./routes"; // suas rotas
+import { routes } from "./routes";
 
-// Criação do servidor
 const app = Fastify();
 
-// Configuração do Zod
 app.setValidatorCompiler(validatorCompiler);
 app.setSerializerCompiler(serializerCompiler);
 
-// CORS
 app.register(cors, {
-  origin: ["http://localhost:3000"], // pode adicionar outros domínios se precisar
+  origin: ["http://localhost:3000"],
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
 });
 
-// Swagger
 app.register(fastifySwagger, {
   openapi: {
     info: {
@@ -41,16 +37,13 @@ app.register(fastifySwaggerUi, {
   },
 });
 
-// Cookie
 app.register(cookie, {
-  secret: "super-secret-password", // altere para uma variável de ambiente
+  secret: "super-secret-password",
   parseOptions: {},
 });
 
-// Rotas
 app.register(routes);
 
-// Porta dinâmica para Render
 const port = Number(process.env.PORT) || 3333;
 
 app
