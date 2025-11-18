@@ -69,7 +69,7 @@ async function main() {
       },
       {
         name: "Waltraud",
-        age: 74,
+        age: 101,
         likes:
           "Carinhosamente conhecida como a “vovó da casa”, adora mandar beijos e assistir. Uma presença especial com seus 101 anos.",
         wish: "Itens de higiene, sabonetes, toalhas ou coisinhas de cabelo",
