@@ -218,20 +218,10 @@ export async function routes(app: FastifyInstance) {
         email !== process.env.ADMIN_EMAIL ||
         password !== process.env.ADMIN_PASSWORD
       ) {
-        return reply.status(401).send({
-          message: "Credenciais inválidas",
-        });
+        return reply.status(401).send({ isAdmin: false });
       }
 
-      reply.setCookie("admin_authenticated", "true", {
-        path: "/",
-        httpOnly: true,
-        sameSite: "lax",
-        secure: process.env.NODE_ENV === "production",
-        maxAge: 60 * 60 * 24 * 30,
-      });
-
-      return reply.send({ message: "Login realizado com sucesso" });
+      return reply.send({ isAdmin: true });
     } catch (error) {
       if (error instanceof ZodError) {
         return reply.status(400).send({
