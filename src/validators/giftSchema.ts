@@ -6,6 +6,6 @@ export const giftSchema = z.object({
   phone: z
     .string()
     .regex(/^\(?\d{2}\)?\s?\d{4,5}-?\d{4}$/, "Telefone inválido"),
-  message: z.string().optional(),
+  message: z.string().min(1, "Mensagem é obrigatória"),
   elderName: z.string().min(1, "Selecione um idoso"),
 });
