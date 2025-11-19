@@ -13,7 +13,7 @@ model Gift {
   name      String
   email     String
   phone     String
-  message   String?
+  message   String
   elderName String
   status    String   @default("pendente")
   createdAt DateTime @default(now())
