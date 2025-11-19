@@ -1,9 +1,7 @@
 import { FastifyInstance } from "fastify";
 import { z, ZodError } from "zod";
-import { PrismaClient } from "@prisma/client";
 import { giftSchema } from "./validators/giftSchema";
-
-const prisma = new PrismaClient();
+import { prisma } from "./lib/prisma";
 
 export async function routes(app: FastifyInstance) {
   app.get("/", () => {
