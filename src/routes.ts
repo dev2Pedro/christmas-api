@@ -5,7 +5,7 @@ import { prisma } from "./lib/prisma";
 
 export async function routes(app: FastifyInstance) {
   app.get("/", () => {
-    return "🎄 API do Natal funcionando!";
+    return "🎄 API do Natal funcionando";
   });
 
   app.get("/gifts", async () => {
